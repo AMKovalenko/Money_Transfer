@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:element name="money-transfer-requests" type="money-transfer-requestsType"/>
+  <xs:complexType name="money-transfer-requestsType">
+    <xs:sequence>
+      <xs:annotation>
+        <xs:documentation>Список запросов на перевод денег</xs:documentation>
+      </xs:annotation>
+      <xs:element type="money-transfer-requestType" name="money-transfer-request" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="correspondentType">
+    <xs:attribute type="xs:string" name="name">
+      <xs:annotation>
+        <xs:documentation>Имя корреспондента</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    <xs:attribute type="xs:string" name="account">
+      <xs:annotation>
+        <xs:documentation>Номер счета корреспондента</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+  </xs:complexType>
+  <xs:complexType name="money-transfer-requestType">
+    <xs:sequence>
+      <xs:element type="correspondentType" name="sender">
+        <xs:annotation>
+          <xs:documentation>Отправитель перевода</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element type="correspondentType" name="recipient">
+        <xs:annotation>
+          <xs:documentation>Получатель перевода</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element type="xs:decimal" name="amount">
+        <xs:annotation>
+          <xs:documentation>Сумма перевода</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element type="xs:decimal" name="commission" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>Комиссия за перевод</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+    <xs:attribute type="xs:string" name="id">
+      <xs:annotation>
+        <xs:documentation>Идентификатор перевода</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+  </xs:complexType>
+</xs:schema>
