@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8" />
+    <title>Add XML</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}"/>
+</head>
+<body>
+<h1 align="center">Вставьте XML</h1>
+<form th:action="@{/executeMoneyTransferRequest}"
+      th:object="${xml}" method="POST">
+<table align="center">
+    <tr>
+        <td align="center"><h2>Money-Transfer-Requests:</h2></td>
+    </tr>
+    <tr>
+        <td><textarea rows="40" cols="60" type="text" th:field="*{request}"/></td>
+    </tr>
+    <tr>
+        <td align="center"><input type="submit" value="Отправить" /></td>
+    </tr>
+</table>
+</form>
+
+</body>
+</html>

@@ -2,8 +2,6 @@ package ru.money.transferservice.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
-import ru.money.transferservice.repositories.MoneyTransferRepository;
 import ru.money.transferservice.entities.MoneyTransferRequest;
 
 import java.io.BufferedWriter;
@@ -16,16 +14,15 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 public class MoneyTransferCallable implements Callable<MoneyTransferRequest> {
 
     private String uploadPath;
-    private MoneyTransferRepository repository;
+    private TransferService<MoneyTransferRequest> service;
     private ConcurrentLinkedQueue<MoneyTransferRequest> requests;
     private Charset charset;
 
     private static final Logger logger = Logger.getLogger(MoneyTransferCallable.class);
 
-    @Autowired
-    public MoneyTransferCallable(ConcurrentLinkedQueue<MoneyTransferRequest> requests, MoneyTransferRepository repository, String uploadPath, Charset charset) {
+    MoneyTransferCallable(ConcurrentLinkedQueue<MoneyTransferRequest> requests, TransferService<MoneyTransferRequest> service, String uploadPath, Charset charset) {
         this.requests = requests;
-        this.repository = repository;
+        this.service = service;
         this.uploadPath = uploadPath;
         this.charset = charset;
     }
@@ -33,29 +30,34 @@ public class MoneyTransferCallable implements Callable<MoneyTransferRequest> {
     @Override
     public MoneyTransferRequest call() throws Exception {
 
-        MoneyTransferRequest item = null;
+        MoneyTransferRequest requestItem = null;
+
         while (requests.size() > 0){
-            if ((item = requests.poll()) == null){
+            if ((requestItem = requests.poll()) == null){
                 break;
             }
-            if (repository.existsById(item.getId())){
-                logger.error(item.toString() + " already exist.");
-                continue;
+            try{
+                if (service.isMoneyTransferRequestExist(requestItem)){
+                    logger.error(requestItem.toString() + " already exist.");
+                    continue;
+                }
+            }catch (Exception e){
+                logger.error("Failed attempt to check existing." + e);
             }
 
-            repository.save(item);
+            service.saveMoneyTransferRequest(requestItem);
 
-            String result = new ObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(item);
+            String result = new ObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(requestItem);
 
-            Path uploadFilePath = Paths.get(uploadPath.concat(item.getId().toString()).concat(".json"));
+            Path uploadFilePath = Paths.get(uploadPath.concat(requestItem.getId().toString()).concat(".json"));
 
             try (BufferedWriter fileWriter = Files.newBufferedWriter(uploadFilePath, charset, StandardOpenOption.CREATE, StandardOpenOption.WRITE)){
                 fileWriter.write(result);
                 fileWriter.flush();
             }catch (IOException e){
-                logger.error("FAILED attempt to cteate file " + item.getId() + ".json " + e.getLocalizedMessage());
+                logger.error("FAILED attempt to cteate file " + requestItem.getId() + ".json " + e.getLocalizedMessage());
             }
         }
-        return item;
+        return requestItem;
     }
 }

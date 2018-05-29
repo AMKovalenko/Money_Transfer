@@ -1,6 +1,5 @@
 package ru.money.transferservice.service.parser;
 
-
 import org.thymeleaf.util.StringUtils;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
@@ -15,7 +14,7 @@ public class XMLParseHandler extends DefaultHandler {
     private ConcurrentLinkedQueue<MoneyTransferRequest> request;
     private MoneyTransferRequest item = null;
     private String currentQName = "";
-    StringBuffer xml = new StringBuffer();
+    private StringBuffer xml = new StringBuffer();
 
     @Override
     public void startElement(String uri, String localName, String qName,
@@ -37,8 +36,6 @@ public class XMLParseHandler extends DefaultHandler {
                 break;
         }
     }
-
-
 
     @Override
     public void characters(char[] c, int start, int length) throws SAXException {

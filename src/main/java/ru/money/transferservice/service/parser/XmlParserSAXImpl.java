@@ -38,7 +38,6 @@ public class XmlParserSAXImpl implements XmlParser<MoneyTransferRequest> {
         } catch (ParserConfigurationException | IOException | SAXException e) {
             logger.error("Exception occured during the parsing XML.\n" + e);
         }
-
         return handler.getRequest();
     }
 }

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<money-transfer-requests>
+        <sender name="str1234" account="str33" />
+        <recipient name="str1234" account="str33" />
+        <amount>123.45</amount>
+        <commission>123.45</commission>
+    <money-transfer-request id="2">
+        <sender name="str1234" account="str11" />
+        <recipient name="str1234" account="str11" />
+        <amount>123.45</amount>
+        <commission>123.45</commission>
+    </money-transfer-request>
+    <money-transfer-request id="3">
+        <amount>123.45</amount>
+        <commission>123.45</commission>
+    </money-transfer-request>
+</money-transfer-requests>
